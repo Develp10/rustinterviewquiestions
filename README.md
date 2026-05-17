@@ -1,8 +1,10 @@
 # Rust Interview Deep Dive
 
-Репозиторий для системной подготовки к собеседованиям по Rust на позиции middle, senior и staff. Внутри сто реальных вопросов с собеседований в продуктовых и инфраструктурных компаниях, подробные разборы с примерами кода и сценарии задач, которые встречаются в продакшене. Не «угадай вывод программы», а механика, на которой строятся настоящие сервисы.
+Системная подготовка к собеседованиям по Rust на позиции middle, senior и staff. Сто реальных вопросов с интервью в продуктовых и инфраструктурных компаниях, подробные разборы с кодом и задачи, которые встречаются в продакшене. Фокус на механике языка, на которой держатся настоящие сервисы, а не на угадывании вывода программы.
 
-Здесь lock-free структуры, self-referential типы в async, FFI с тензорными библиотеками, корректный Send на гардах через await, memory ordering под loom, soundness кастомных коллекций. И при этом все начинается с базы. Владение, заимствование, лайфтаймы. Кто хочет, может зайти и с нуля, и с уровня staff. Если параллельно нужен живой контент на русском с уроками и разборами кода, есть канал [t.me/rust_code](https://t.me/rust_code) - туда удобно подписаться сразу.
+В разборах есть lock-free структуры, self-referential типы в async, FFI с тензорными библиотеками, корректный Send на гардах через await, memory ordering под loom, soundness кастомных коллекций. База тоже на месте: владение, заимствование, лайфтаймы, базовые трейты. Заходить можно и с нуля, и с уровня staff.
+
+Живой контент на русском с уроками и разборами кода - канал [t.me/rust_code](https://t.me/rust_code).
 
 ## Содержание
 
@@ -11,14 +13,14 @@
 3. [Уровни сложности](#уровни-сложности)
 4. [Связанные файлы](#связанные-файлы)
 5. [Ответы и разборы 100 вопросов](#ответы-и-разборы-100-вопросов)
-   - [Владение, заимствование, лайфтаймы](#владение-заимствование-лайфтаймы)
-   - [Типы, трейты, обобщения](#типы-трейты-обобщения)
-   - [Конкурентность и параллелизм](#конкурентность-и-параллелизм)
-   - [Async и runtime](#async-и-runtime)
-   - [Unsafe, FFI, низкий уровень](#unsafe-ffi-низкий-уровень)
-   - [Производительность](#производительность)
-   - [Макросы и метапрограммирование](#макросы-и-метапрограммирование)
-   - [Архитектура и дизайн API](#архитектура-и-дизайн-api)
+ - [Владение, заимствование, лайфтаймы](#владение-заимствование-лайфтаймы)
+ - [Типы, трейты, обобщения](#типы-трейты-обобщения)
+ - [Конкурентность и параллелизм](#конкурентность-и-параллелизм)
+ - [Async и runtime](#async-и-runtime)
+ - [Unsafe, FFI, низкий уровень](#unsafe-ffi-низкий-уровень)
+ - [Производительность](#производительность)
+ - [Макросы и метапрограммирование](#макросы-и-метапрограммирование)
+ - [Архитектура и дизайн API](#архитектура-и-дизайн-api)
 6. [Продвинутые вопросы уровня staff и expert](#продвинутые-вопросы-уровня-staff-и-expert)
 7. [Сколько времени занимает подготовка](#сколько-времени-занимает-подготовка)
 8. [Полезные ресурсы](#-полезные-ресурсы)
@@ -39,27 +41,27 @@
 
 ```
 rust-interview-deepdive/
-├── README.md              # этот файл с вопросами и ответами
-├── QA.md                  # тот же материал отдельным файлом
-├── ANSWERS.md             # тематические разборы с практическим уклоном
-├── POST.md                # черновики и заметки
+├── README.md # этот файл с вопросами и ответами
+├── QA.md # тот же материал отдельным файлом
+├── ANSWERS.md # тематические разборы с практическим уклоном
+├── POST.md # черновики и заметки
 ├── CONTRIBUTING.md
 ├── LICENSE
-├── Cargo.toml             # workspace
-├── .github/workflows/ci.yml   # cargo test + clippy + fmt + miri
+├── Cargo.toml # workspace
+├── .github/workflows/ci.yml # cargo test + clippy + fmt + miri
 ├── tasks/
-│   ├── 01-ownership-move/
-│   │   ├── README.md      # условие, разбор, подводные камни
-│   │   ├── src/lib.rs     # реализация
-│   │   ├── tests/it.rs    # интеграционные тесты
-│   │   └── benches/bench.rs   # где уместно
-│   └── ... до 40/
+│ ├── 01-ownership-move/
+│ │ ├── README.md # условие, разбор, подводные камни
+│ │ ├── src/lib.rs # реализация
+│ │ ├── tests/it.rs # интеграционные тесты
+│ │ └── benches/bench.rs # где уместно
+│ └── ... до 40/
 └── theory/
-    ├── memory-model.md
-    ├── send-sync.md
-    ├── pin-unpin.md
-    ├── async-runtime.md
-    └── unsafe-invariants.md
+ ├── memory-model.md
+ ├── send-sync.md
+ ├── pin-unpin.md
+ ├── async-runtime.md
+ └── unsafe-invariants.md
 ```
 
 Каталог `tasks/` это практические задачи с тестами и иногда бенчмарками. Каталог `theory/` это длинные тексты по фундаментальным темам, на которые ссылаются разборы задач.
@@ -94,19 +96,19 @@ Staff. Задачи 31 40. Дизайн API, тёмные углы компил�
 
 Три правила. У каждого значения есть ровно один владелец. В один момент времени владелец только один, передача владения называется move. Когда владелец выходит из скобок, значение дропается.
 
-Что важно понимать. Move в Rust - побайтовое копирование стекового представления плюс инвалидация исходного биндинга на этапе компиляции. Для `String` это копирование трёх машинных слов (указатель, длина, ёмкость), а не аллокация. Поэтому move дешёвый и не вызывает Clone.
+Move в Rust - побайтовое копирование стекового представления плюс инвалидация исходного биндинга на этапе компиляции. Для `String` это копирование трёх машинных слов (указатель, длина, ёмкость), а не аллокация. Поэтому move дешёвый и не вызывает Clone.
 
 ```rust
 fn take(s: String) { println!("{s}"); }
 
 fn main() {
-    let a = String::from("hi");
-    take(a);
-    // println!("{a}"); // E0382: borrow of moved value
+ let a = String::from("hi");
+ take(a);
+ // println!("{a}"); // E0382: borrow of moved value
 }
 ```
 
-Типичная путаница: move и глубокое копирование. Move не копирует кучу. Глубокое копирование делает `Clone`. Для `Copy`-типов (примитивы, `&T`, кортежи из Copy) семантика побитовая и исходный биндинг остаётся валидным, потому что `Copy` и `Drop` взаимоисключающие.
+Часто путают: move и глубокое копирование. Move не копирует кучу. Глубокое копирование делает `Clone`. Для `Copy`-типов (примитивы, `&T`, кортежи из Copy) семантика побитовая и исходный биндинг остаётся валидным, потому что `Copy` и `Drop` взаимоисключающие.
 
 Чек для ревью: если функция принимает `String` по значению, она забирает владение. Если потом нужно вернуть строку вызывающему, либо возвращайте её из функции, либо принимайте `&str` или `&mut String`.
 
@@ -123,10 +125,10 @@ Copy несовместим с Drop. Если у типа есть дестру�
 struct Point { x: f32, y: f32 }
 
 fn main() {
-    let p = Point { x: 1.0, y: 2.0 };
-    let q = p;          // copy
-    let r = p;          // тоже copy, p всё ещё валиден
-    println!("{} {} {}", p.x, q.x, r.x);
+ let p = Point { x: 1.0, y: 2.0 };
+ let q = p; // copy
+ let r = p; // тоже copy, p всё ещё валиден
+ println!("{} {} {}", p.x, q.x, r.x);
 }
 ```
 
@@ -140,21 +142,21 @@ fn main() {
 
 ```rust
 fn main() {
-    let mut v = vec![1, 2, 3];
-    let r1 = &v;
-    let r2 = &v;          // несколько shared ок
-    println!("{r1:?} {r2:?}");
-    let m = &mut v;       // r1 и r2 уже не используются благодаря NLL
-    m.push(4);
+ let mut v = vec![1, 2, 3];
+ let r1 = &v;
+ let r2 = &v; // несколько shared ок
+ println!("{r1:?} {r2:?}");
+ let m = &mut v; // r1 и r2 уже не используются благодаря NLL
+ m.push(4);
 }
 ```
 
-Типичная ловушка: итерация и мутация одновременно.
+Частая ловушка: итерация и мутация одновременно.
 
 ```rust
 let mut v = vec![1, 2, 3];
-for x in &v {                  // & v держит shared
-    if *x == 2 { v.push(99); } // E0502
+for x in &v { // & v держит shared
+ if *x == 2 { v.push(99); } // E0502
 }
 ```
 
@@ -170,7 +172,7 @@ for x in &v {                  // & v держит shared
 
 ```rust
 fn longest<'a>(a: &'a str, b: &'a str) -> &'a str {
-    if a.len() >= b.len() { a } else { b }
+ if a.len() >= b.len() { a } else { b }
 }
 ```
 
@@ -184,7 +186,7 @@ struct Parser<'src> { input: &'src str, pos: usize }
 
 Тут `'src` нужен потому что структура держит ссылку, и компилятор обязан знать, что `Parser` не переживёт `input`.
 
-Чек: если у функции или структуры одна входная ссылка и одна выходная, аннотации не нужны (правило elision разруливает само). Если несколько входных ссылок и возвращается ссылка, аннотация почти всегда обязательна.
+Правило большого пальца: если у функции или структуры одна входная ссылка и одна выходная, аннотации не нужны (правило elision разруливает само). Если несколько входных ссылок и возвращается ссылка, аннотация почти всегда обязательна.
 
 #### 5. Правила elision лайфтаймов
 
@@ -199,8 +201,8 @@ Elision - набор детерминированных правил, по ко�
 Третье: если есть `&self` или `&mut self`, лайфтайм `self` присваивается всем выходным.
 
 ```rust
-fn first(s: &str) -> &str { &s[..1] }                       // (1) и (2)
-impl Cache { fn get(&self, key: &str) -> &str { /* */ } }   // (1) и (3)
+fn first(s: &str) -> &str { &s[..1] } // (1) и (2)
+impl Cache { fn get(&self, key: &str) -> &str { /* */ } } // (1) и (3)
 ```
 
 Когда elision не сработает. Несколько входных ссылок без `&self` - второе правило не применяется. Возвращается ссылка, не связанная ни с одним входом - тоже нужна аннотация (часто это `'static` для строковых литералов).
@@ -224,7 +226,7 @@ fn spawn<F: FnOnce() + Send + 'static>(f: F) { /* tokio::spawn */ }
 
 Тут `'static` не значит «замыкание живёт вечно». Значит «замыкание не захватывает короткоживущих ссылок». `String` подходит под `T: 'static` потому что владеет своими данными.
 
-Типичная ошибка: объявляют `fn make() -> &'static str` и возвращают строку, собранную в рантайме. Решается возвратом `String`, или `Box::leak` с пониманием, что память не освободится.
+Частая ошибка: объявляют `fn make() -> &'static str` и возвращают строку, собранную в рантайме. Решается возвратом `String`, или `Box::leak` с пониманием, что память не освободится.
 
 #### 7. Что такое NLL и как работает borrow checker сейчас
 
@@ -234,18 +236,18 @@ NLL (Non-Lexical Lifetimes) появились в 2018 edition и фактиче
 let mut v = vec![1, 2, 3];
 let r = &v[0];
 println!("{r}");
-v.push(4);   // до NLL ошибка, после NLL ок: r больше не используется
+v.push(4); // до NLL ошибка, после NLL ок: r больше не используется
 ```
 
 Сейчас borrow checker работает на MIR и считает лайфтайм заимствования по последней точке использования. Технически - анализ потока управления на CFG, где компилятор строит регионы и проверяет, не пересекаются ли несовместимые заимствования.
 
 Следующий шаг - Polonius, реализация borrow checker на datalog. Он принимает несколько паттернов, которые NLL ещё отвергает, в первую очередь возврат ссылок через условные ветви.
 
-На практике: если код выглядит корректным, но NLL не пропускает, помогает либо явное скоупирование в `{ ... }`, либо вынесение части кода в отдельную функцию, чтобы лайфтайм закрылся раньше.
+если код выглядит корректным, но NLL не пропускает, помогает либо явное скоупирование в `{ ... }`, либо вынесение части кода в отдельную функцию, чтобы лайфтайм закрылся раньше.
 
 #### 8. Что делает Box и когда он нужен
 
-`Box<T>` - владеющий указатель в кучу. Внутри одно машинное слово, оно содержит указатель на аллокацию из глобального аллокатора. При дропе `Box` вызывает деструктор `T` и возвращает память аллокатору.
+`Box<T>` - владеющий указатель в кучу. Внутри одно машинное слово - указатель на аллокацию из глобального аллокатора. При дропе `Box` вызывает деструктор `T` и возвращает память аллокатору.
 
 Когда нужен.
 
@@ -261,7 +263,7 @@ Type erasure через trait object. `Box<dyn Trait>` хранит толсты
 trait Shape { fn area(&self) -> f64; }
 struct Circle(f64);
 impl Shape for Circle {
-    fn area(&self) -> f64 { std::f64::consts::PI * self.0 * self.0 }
+ fn area(&self) -> f64 { std::f64::consts::PI * self.0 * self.0 }
 }
 
 let shapes: Vec<Box<dyn Shape>> = vec![Box::new(Circle(1.0))];
@@ -284,7 +286,7 @@ let d2 = Arc::clone(&data);
 std::thread::spawn(move || println!("{d2:?}"));
 ```
 
-Внутри обоих два счётчика: strong и weak. Weak-ссылки нужны для разрыва циклов. `Rc::new_cyclic` и `Arc::new_cyclic` создают значение, которое может ссылаться на самого себя через `Weak`.
+У каждого внутри два счётчика, strong и weak. Weak-ссылки нужны для разрыва циклов. `Rc::new_cyclic` и `Arc::new_cyclic` создают значение, которое может ссылаться на самого себя через `Weak`.
 
 Когда что выбирать. По умолчанию однопоточно - `Rc`. Данные пересекают границу потоков - `Arc`. Внутри `tokio::spawn` замыкание должно быть `Send + 'static`, поэтому `Arc`. Иммутабельные read-heavy данные - `Arc` отлично работает. Нужна мутация - `Arc<Mutex<T>>` или `Arc<RwLock<T>>`.
 
@@ -310,10 +312,10 @@ use std::collections::HashMap;
 
 struct Cache { map: RefCell<HashMap<String, String>> }
 impl Cache {
-    fn get_or_insert(&self, k: &str, v: String) -> String {
-        let mut m = self.map.borrow_mut();
-        m.entry(k.into()).or_insert(v).clone()
-    }
+ fn get_or_insert(&self, k: &str, v: String) -> String {
+ let mut m = self.map.borrow_mut();
+ m.entry(k.into()).or_insert(v).clone()
+ }
 }
 ```
 
@@ -325,7 +327,7 @@ impl Cache {
 
 `Cow<'a, B>` (Clone-on-Write) - enum `Borrowed(&'a B) | Owned(B::Owned)`. Идея: пока изменения не нужны, держим shared-ссылку; как только нужно мутировать, делаем `to_mut`, который при необходимости клонирует данные в Owned-вариант.
 
-Реальная польза в трёх сценариях.
+Где применяется на практике.
 
 Парсинг и нормализация. Если вход уже валидный, возвращаем `Cow::Borrowed(input)` без аллокации. Если нужно подправить, переходим в Owned.
 
@@ -333,8 +335,8 @@ impl Cache {
 use std::borrow::Cow;
 
 fn normalize(s: &str) -> Cow<'_, str> {
-    if s.contains('\r') { Cow::Owned(s.replace('\r', "")) }
-    else { Cow::Borrowed(s) }
+ if s.contains('\r') { Cow::Owned(s.replace('\r', "")) }
+ else { Cow::Borrowed(s) }
 }
 ```
 
@@ -355,13 +357,13 @@ struct Guard;
 impl Drop for Guard { fn drop(&mut self) { println!("bye"); } }
 
 fn main() {
-    let g = Guard;
-    drop(g);              // вызовет деструктор сейчас
-    println!("after");
+ let g = Guard;
+ drop(g); // вызовет деструктор сейчас
+ println!("after");
 }
 ```
 
-Тонкости. Порядок дропа полей структуры - в порядке объявления. Порядок дропа локальных переменных - в обратном порядке создания. Это критично для RAII-гардов: лок должен дропаться позже данных, которые он защищает.
+Детали. Порядок дропа полей структуры - в порядке объявления. Порядок дропа локальных переменных - в обратном порядке создания. Это критично для RAII-гардов: лок должен дропаться позже данных, которые он защищает.
 
 В `Drop::drop` нельзя паниковать, если уже идёт паника: double panic ведёт к abort. Поэтому в деструкторах не вызывают `.unwrap` и не делают потенциально падающих операций.
 
@@ -377,10 +379,10 @@ fn main() {
 
 ```rust
 let s = String::from("hi");
-let f1 = || println!("{s}");          // Fn: захват по &
+let f1 = || println!("{s}"); // Fn: захват по &
 let mut v = vec![1];
-let mut f2 = || v.push(2);            // FnMut: захват по &mut
-let f3 = move || drop(s);             // FnOnce: потребляет s
+let mut f2 = || v.push(2); // FnMut: захват по &mut
+let f3 = move || drop(s); // FnOnce: потребляет s
 ```
 
 Ключевое слово `move` форсирует захват по значению независимо от того, как используются переменные. Это нужно для `thread::spawn` и `tokio::spawn`, потому что замыкание должно быть `'static` и не может держать ссылок на стек породившего потока.
@@ -391,15 +393,15 @@ let f3 = move || drop(s);             // FnOnce: потребляет s
 
 `PhantomData<T>` - маркер нулевого размера, который говорит компилятору: «считай, что эта структура владеет или использует `T`, хотя физически его не хранит». Без хранения данных, но с эффектом на dropck, variance и auto traits.
 
-Три классических применения.
+Где это пригождается.
 
 Привязка лайфтайма к структуре, которая держит сырой указатель. Без `PhantomData<&'a T>` компилятор не свяжет `'a` со структурой, и можно получить висящий указатель без жалоб от borrow checker.
 
 ```rust
 struct Slice<'a, T> {
-    ptr: *const T,
-    len: usize,
-    _marker: std::marker::PhantomData<&'a T>,
+ ptr: *const T,
+ len: usize,
+ _marker: std::marker::PhantomData<&'a T>,
 }
 ```
 
@@ -413,7 +415,7 @@ struct User; struct Order;
 
 Контроль variance и Send/Sync. `PhantomData<*const T>` снимает `Send`/`Sync`, `PhantomData<fn() -> T>` делает тип ковариантным по `T`. Это инструменты для авторов unsafe-кода, которые знают, какую дисперсию они хотят.
 
-Чего не делает. `PhantomData<T>` не вызывает деструктор `T`, потому что значение не хранится. Если ваш тип логически владеет `T` и должен его дропать, нужен `PhantomData<T>` плюс корректная работа с dropck, либо хранение реального `T`.
+Что эта штука не делает. `PhantomData<T>` не вызывает деструктор `T`, потому что значение не хранится. Если ваш тип логически владеет `T` и должен его дропать, нужен `PhantomData<T>` плюс корректная работа с dropck, либо хранение реального `T`.
 
 #### 15. Borrow, AsRef, Deref, чем они отличаются
 
@@ -434,7 +436,7 @@ let r: &str = &s; // deref coercion
 use std::collections::HashMap;
 let mut m: HashMap<String, i32> = HashMap::new();
 m.insert("a".into(), 1);
-m.get("a");           // &str: работает через Borrow<str> для String
+m.get("a"); // &str: работает через Borrow<str> для String
 ```
 
 Когда что выбирать. Smart pointer - `Deref`. Принять любое строкоподобное в API - `AsRef<str>` или `AsRef<Path>`. Ключи коллекций с альтернативным lookup - `Borrow`.
@@ -447,15 +449,15 @@ m.get("a");           // &str: работает через Borrow<str> для St
 
 ```rust
 enum Shape {
-    Circle(f64),
-    Rect { w: f64, h: f64 },
+ Circle(f64),
+ Rect { w: f64, h: f64 },
 }
 
 fn area(s: &Shape) -> f64 {
-    match s {
-        Shape::Circle(r) => std::f64::consts::PI * r * r,
-        Shape::Rect { w, h } => w * h,
-    }
+ match s {
+ Shape::Circle(r) => std::f64::consts::PI * r * r,
+ Shape::Rect { w, h } => w * h,
+ }
 }
 
 fn main() { println!("{}", area(&Shape::Rect { w: 2.0, h: 3.0 })); }
@@ -469,8 +471,8 @@ match заставляет покрыть все варианты, и забыт
 
 ```rust
 trait Greet {
-    fn name(&self) -> &str;
-    fn hello(&self) { println!("hi {}", self.name()); }
+ fn name(&self) -> &str;
+ fn hello(&self) { println!("hi {}", self.name()); }
 }
 
 struct Cat;
@@ -501,8 +503,8 @@ fn sum_dyn(ops: &[Box<dyn Op>]) -> i32 { ops.iter().map(|o| o.run()).sum() }
 Чтобы трейт можно было использовать как dyn Trait, он должен быть object safe. Главные ограничения такие. Методы не принимают и не возвращают Self по значению, не используют дженерики, не имеют where Self: Sized без отдельного маркера. Self не появляется в ассоциированных константах. Причина в том, что для vtable нужен фиксированный набор слотов с известными сигнатурами. Если бы метод принимал Self, размер аргумента зависел бы от конкретного типа, и универсальный vtable стал бы невозможен.
 
 ```rust
-trait Bad { fn make() -> Self; }            // не object safe
-trait Good { fn name(&self) -> &str; }      // object safe
+trait Bad { fn make() -> Self; } // не object safe
+trait Good { fn name(&self) -> &str; } // object safe
 
 fn use_good(x: &dyn Good) { println!("{}", x.name()); }
 ```
@@ -518,10 +520,10 @@ trait Counter { type Item; fn next(&mut self) -> Option<Self::Item>; }
 
 struct UpTo { i: u32, end: u32 }
 impl Counter for UpTo {
-    type Item = u32;
-    fn next(&mut self) -> Option<u32> {
-        if self.i < self.end { self.i += 1; Some(self.i - 1) } else { None }
-    }
+ type Item = u32;
+ fn next(&mut self) -> Option<u32> {
+ if self.i < self.end { self.i += 1; Some(self.i - 1) } else { None }
+ }
 }
 ```
 
@@ -537,9 +539,9 @@ use std::fmt::Display;
 struct Wrap(Vec<i32>);
 
 impl Display for Wrap {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self.0)
-    }
+ fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+ write!(f, "{:?}", self.0)
+ }
 }
 ```
 
@@ -569,8 +571,8 @@ fn main() { println!("{}", speed(Meters(100.0), Seconds(9.58))); }
 struct Point { x: i32, y: i32 }
 
 fn main() {
-    let p = Point::default();
-    println!("{:?}", p.clone());
+ let p = Point::default();
+ println!("{:?}", p.clone());
 }
 ```
 
@@ -582,7 +584,7 @@ Derive это про эргономику и про защиту от ошибо
 
 ```rust
 fn iter_evens(v: &[i32]) -> impl Iterator<Item = &i32> {
-    v.iter().filter(|x| *x % 2 == 0)
+ v.iter().filter(|x| *x % 2 == 0)
 }
 
 fn log(item: impl std::fmt::Display) { println!("{}", item); }
@@ -603,8 +605,8 @@ struct Console;
 impl Logger for Console { fn log(&self, m: &str) { println!("{}", m); } }
 
 fn main() {
-    let app = App { logger: Box::new(Console) };
-    app.logger.log("ok");
+ let app = App { logger: Box::new(Console) };
+ app.logger.log("ok");
 }
 ```
 
@@ -616,12 +618,12 @@ Sized это трейт, который реализуют все типы с и
 
 ```rust
 fn print_ref<T: ?Sized + std::fmt::Debug>(x: &T) {
-    println!("{:?}", x);
+ println!("{:?}", x);
 }
 
 fn main() {
-    print_ref::<str>("hello");
-    print_ref::<[i32]>(&[1, 2, 3]);
+ print_ref::<str>("hello");
+ print_ref::<[i32]>(&[1, 2, 3]);
 }
 ```
 
@@ -635,7 +637,7 @@ Where позволяет описывать ограничения отдель�
 use std::fmt::Display;
 
 fn print_all<I>(iter: I) where I: IntoIterator, I::Item: Display {
-    for x in iter { println!("{}", x); }
+ for x in iter { println!("{}", x); }
 }
 
 fn main() { print_all(vec!["a", "b"]); }
@@ -666,7 +668,7 @@ Supertrait это требование, что любой тип, реализу
 use std::fmt::Display;
 
 trait Pretty: Display {
-    fn pretty(&self) -> String { format!("=> {}", self) }
+ fn pretty(&self) -> String { format!("=> {}", self) }
 }
 
 impl Pretty for i32 {}
@@ -685,12 +687,12 @@ struct Celsius(f64);
 struct Fahrenheit(f64);
 
 impl From<Celsius> for Fahrenheit {
-    fn from(c: Celsius) -> Self { Fahrenheit(c.0 * 1.8 + 32.0) }
+ fn from(c: Celsius) -> Self { Fahrenheit(c.0 * 1.8 + 32.0) }
 }
 
 fn main() {
-    let f: Fahrenheit = Celsius(100.0).into(); // into получено через blanket
-    println!("{}", f.0);
+ let f: Fahrenheit = Celsius(100.0).into(); // into получено через blanket
+ println!("{}", f.0);
 }
 ```
 
@@ -707,9 +709,9 @@ use std::sync::Arc;
 use std::thread;
 
 fn main() {
-    let v = Arc::new(vec![1, 2, 3]);
-    let v2 = v.clone();
-    thread::spawn(move || println!("{:?}", v2)).join().unwrap();
+ let v = Arc::new(vec![1, 2, 3]);
+ let v2 = v.clone();
+ thread::spawn(move || println!("{:?}", v2)).join().unwrap();
 }
 ```
 
@@ -723,13 +725,13 @@ Mutex дает эксклюзивный доступ. В любой момент
 use std::sync::RwLock;
 
 fn main() {
-    let lock = RwLock::new(0);
-    {
-        let r1 = lock.read().unwrap();
-        let r2 = lock.read().unwrap();
-        println!("{} {}", *r1, *r2);
-    }
-    *lock.write().unwrap() = 5;
+ let lock = RwLock::new(0);
+ {
+ let r1 = lock.read().unwrap();
+ let r2 = lock.read().unwrap();
+ println!("{} {}", *r1, *r2);
+ }
+ *lock.write().unwrap() = 5;
 }
 ```
 
@@ -743,15 +745,15 @@ fn main() {
 use std::sync::Mutex;
 
 fn main() {
-    let m = Mutex::new(0);
-    let _ = std::panic::catch_unwind(|| {
-        let _g = m.lock().unwrap();
-        panic!("boom");
-    });
-    match m.lock() {
-        Ok(g) => println!("{}", *g),
-        Err(p) => println!("poisoned, value = {}", *p.into_inner()),
-    }
+ let m = Mutex::new(0);
+ let _ = std::panic::catch_unwind(|| {
+ let _g = m.lock().unwrap();
+ panic!("boom");
+ });
+ match m.lock() {
+ Ok(g) => println!("{}", *g),
+ Err(p) => println!("poisoned, value = {}", *p.into_inner()),
+ }
 }
 ```
 
@@ -766,13 +768,13 @@ use std::sync::mpsc;
 use std::thread;
 
 fn main() {
-    let (tx, rx) = mpsc::channel();
-    for i in 0..3 {
-        let tx = tx.clone();
-        thread::spawn(move || tx.send(i).unwrap());
-    }
-    drop(tx);
-    for v in rx { println!("{}", v); }
+ let (tx, rx) = mpsc::channel();
+ for i in 0..3 {
+ let tx = tx.clone();
+ thread::spawn(move || tx.send(i).unwrap());
+ }
+ drop(tx);
+ for v in rx { println!("{}", v); }
 }
 ```
 
@@ -786,11 +788,11 @@ fn main() {
 use std::thread;
 
 fn main() {
-    let data = vec![1, 2, 3, 4];
-    thread::scope(|s| {
-        s.spawn(|| println!("{:?}", &data[..2]));
-        s.spawn(|| println!("{:?}", &data[2..]));
-    });
+ let data = vec![1, 2, 3, 4];
+ thread::scope(|s| {
+ s.spawn(|| println!("{:?}", &data[..2]));
+ s.spawn(|| println!("{:?}", &data[2..]));
+ });
 }
 ```
 
@@ -807,11 +809,11 @@ use std::thread;
 static CNT: AtomicUsize = AtomicUsize::new(0);
 
 fn main() {
-    let h: Vec<_> = (0..4).map(|_| thread::spawn(|| {
-        for _ in 0..1000 { CNT.fetch_add(1, Ordering::Relaxed); }
-    })).collect();
-    for t in h { t.join().unwrap(); }
-    println!("{}", CNT.load(Ordering::Relaxed));
+ let h: Vec<_> = (0..4).map(|_| thread::spawn(|| {
+ for _ in 0..1000 { CNT.fetch_add(1, Ordering::Relaxed); }
+ })).collect();
+ for t in h { t.join().unwrap(); }
+ println!("{}", CNT.load(Ordering::Relaxed));
 }
 ```
 
@@ -826,14 +828,14 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 fn main() {
-    let m = Arc::new(Mutex::new(false));
-    let m2 = m.clone();
-    let h = thread::spawn(move || {
-        let mut g = m2.lock().unwrap();
-        if !*g { *g = true; }
-    });
-    h.join().unwrap();
-    println!("{}", *m.lock().unwrap());
+ let m = Arc::new(Mutex::new(false));
+ let m2 = m.clone();
+ let h = thread::spawn(move || {
+ let mut g = m2.lock().unwrap();
+ if !*g { *g = true; }
+ });
+ h.join().unwrap();
+ println!("{}", *m.lock().unwrap());
 }
 ```
 
@@ -847,13 +849,13 @@ fn main() {
 use std::sync::Mutex;
 
 fn safe(m: &Mutex<i32>) -> i32 {
-    let v = { let g = m.lock().unwrap(); *g };
-    v + 1
+ let v = { let g = m.lock().unwrap(); *g };
+ v + 1
 }
 
 fn main() {
-    let m = Mutex::new(10);
-    println!("{}", safe(&m));
+ let m = Mutex::new(10);
+ println!("{}", safe(&m));
 }
 ```
 
@@ -867,8 +869,8 @@ Rayon это библиотека параллельной обработки д
 use rayon::prelude::*;
 
 fn main() {
-    let sum: u64 = (1u64..=1_000_000).into_par_iter().map(|x| x * x).sum();
-    println!("{}", sum);
+ let sum: u64 = (1u64..=1_000_000).into_par_iter().map(|x| x * x).sum();
+ println!("{}", sum);
 }
 ```
 
@@ -888,9 +890,9 @@ Work stealing это стратегия планирования, при кот�
 use rayon::ThreadPoolBuilder;
 
 fn main() {
-    let pool = ThreadPoolBuilder::new().num_threads(4).build().unwrap();
-    let r = pool.install(|| (0..100).into_iter().sum::<i32>());
-    println!("{}", r);
+ let pool = ThreadPoolBuilder::new().num_threads(4).build().unwrap();
+ let r = pool.install(|| (0..100).into_iter().sum::<i32>());
+ println!("{}", r);
 }
 ```
 
@@ -905,17 +907,17 @@ use std::sync::{Arc, Barrier};
 use std::thread;
 
 fn main() {
-    let b = Arc::new(Barrier::new(3));
-    let mut h = vec![];
-    for i in 0..3 {
-        let b = b.clone();
-        h.push(thread::spawn(move || {
-            println!("{} before", i);
-            b.wait();
-            println!("{} after", i);
-        }));
-    }
-    for t in h { t.join().unwrap(); }
+ let b = Arc::new(Barrier::new(3));
+ let mut h = vec![];
+ for i in 0..3 {
+ let b = b.clone();
+ h.push(thread::spawn(move || {
+ println!("{} before", i);
+ b.wait();
+ println!("{} after", i);
+ }));
+ }
+ for t in h { t.join().unwrap(); }
 }
 ```
 
@@ -930,18 +932,18 @@ use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
 
 fn main() {
-    let pair = Arc::new((Mutex::new(false), Condvar::new()));
-    let pair2 = pair.clone();
-    thread::spawn(move || {
-        let (m, cv) = &*pair2;
-        let mut g = m.lock().unwrap();
-        *g = true;
-        cv.notify_one();
-    });
-    let (m, cv) = &*pair;
-    let mut g = m.lock().unwrap();
-    while !*g { g = cv.wait(g).unwrap(); }
-    println!("started");
+ let pair = Arc::new((Mutex::new(false), Condvar::new()));
+ let pair2 = pair.clone();
+ thread::spawn(move || {
+ let (m, cv) = &*pair2;
+ let mut g = m.lock().unwrap();
+ *g = true;
+ cv.notify_one();
+ });
+ let (m, cv) = &*pair;
+ let mut g = m.lock().unwrap();
+ while !*g { g = cv.wait(g).unwrap(); }
+ println!("started");
 }
 ```
 
@@ -959,14 +961,14 @@ Thread local это значение, у которого свой экземп�
 use std::cell::RefCell;
 
 thread_local! {
-    static COUNTER: RefCell<u64> = RefCell::new(0);
+ static COUNTER: RefCell<u64> = RefCell::new(0);
 }
 
 fn bump() { COUNTER.with(|c| *c.borrow_mut() += 1); }
 
 fn main() {
-    bump(); bump();
-    COUNTER.with(|c| println!("{}", c.borrow()));
+ bump(); bump();
+ COUNTER.with(|c| println!("{}", c.borrow()));
 }
 ```
 
@@ -983,9 +985,9 @@ async fn add(a: u32, b: u32) -> u32 { a + b }
 
 #[tokio::main]
 async fn main() {
-    let f = add(1, 2);          // ничего еще не вычислено
-    let r = f.await;             // только сейчас полл и результат
-    println!("{}", r);
+ let f = add(1, 2); // ничего еще не вычислено
+ let r = f.await; // только сейчас полл и результат
+ println!("{}", r);
 }
 ```
 
@@ -1002,14 +1004,14 @@ use std::task::{Context, Poll};
 
 struct Yield(bool);
 impl Future for Yield {
-    type Output = ();
-    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<()> {
-        if self.0 { Poll::Ready(()) } else {
-            self.0 = true;
-            cx.waker().wake_by_ref();
-            Poll::Pending
-        }
-    }
+ type Output = ();
+ fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<()> {
+ if self.0 { Poll::Ready(()) } else {
+ self.0 = true;
+ cx.waker().wake_by_ref();
+ Poll::Pending
+ }
+ }
 }
 ```
 
@@ -1032,8 +1034,8 @@ Executor отвечает за то, чтобы поллить фьючи, ко�
 ```rust
 #[tokio::main]
 async fn main() {
-    let r = tokio::task::spawn_blocking(|| heavy()).await.unwrap();
-    println!("{}", r);
+ let r = tokio::task::spawn_blocking(|| heavy()).await.unwrap();
+ println!("{}", r);
 }
 
 fn heavy() -> u64 { (0..1_000_000u64).sum() }
@@ -1050,10 +1052,10 @@ use tokio::time::{sleep, Duration};
 
 #[tokio::main]
 async fn main() {
-    tokio::select! {
-        _ = sleep(Duration::from_millis(50)) => println!("timeout"),
-        _ = async { sleep(Duration::from_millis(100)).await; } => println!("inner"),
-    }
+ tokio::select! {
+ _ = sleep(Duration::from_millis(50)) => println!("timeout"),
+ _ = async { sleep(Duration::from_millis(100)).await; } => println!("inner"),
+ }
 }
 ```
 
@@ -1070,8 +1072,8 @@ tokio::spawn отправляет фьючу на исполнение в ран
 ```rust
 #[tokio::main]
 async fn main() {
-    let h = tokio::spawn(async { 42 });
-    println!("{}", h.await.unwrap());
+ let h = tokio::spawn(async { 42 });
+ println!("{}", h.await.unwrap());
 }
 ```
 
@@ -1086,11 +1088,11 @@ use tokio::task::JoinSet;
 
 #[tokio::main]
 async fn main() {
-    let mut set = JoinSet::new();
-    for i in 0..5 { set.spawn(async move { i * i }); }
-    while let Some(r) = set.join_next().await {
-        println!("{}", r.unwrap());
-    }
+ let mut set = JoinSet::new();
+ for i in 0..5 { set.spawn(async move { i * i }); }
+ while let Some(r) = set.join_next().await {
+ println!("{}", r.unwrap());
+ }
 }
 ```
 
@@ -1105,13 +1107,13 @@ use async_trait::async_trait;
 
 #[async_trait]
 trait Store {
-    async fn get(&self, key: &str) -> Option<String>;
+ async fn get(&self, key: &str) -> Option<String>;
 }
 
 struct Mem;
 #[async_trait]
 impl Store for Mem {
-    async fn get(&self, _k: &str) -> Option<String> { Some("v".into()) }
+ async fn get(&self, _k: &str) -> Option<String> { Some("v".into()) }
 }
 ```
 
@@ -1126,11 +1128,11 @@ use tokio::sync::mpsc;
 
 #[tokio::main]
 async fn main() {
-    let (tx, mut rx) = mpsc::channel::<i32>(8);
-    tokio::spawn(async move {
-        for i in 0..100 { tx.send(i).await.unwrap(); }
-    });
-    while let Some(v) = rx.recv().await { println!("{}", v); }
+ let (tx, mut rx) = mpsc::channel::<i32>(8);
+ tokio::spawn(async move {
+ for i in 0..100 { tx.send(i).await.unwrap(); }
+ });
+ while let Some(v) = rx.recv().await { println!("{}", v); }
 }
 ```
 
@@ -1145,8 +1147,8 @@ use tokio_stream::{self as stream, StreamExt};
 
 #[tokio::main]
 async fn main() {
-    let mut s = stream::iter(vec![1, 2, 3, 4, 5]).filter(|x| x % 2 == 0);
-    while let Some(v) = s.next().await { println!("{}", v); }
+ let mut s = stream::iter(vec![1, 2, 3, 4, 5]).filter(|x| x % 2 == 0);
+ while let Some(v) = s.next().await { println!("{}", v); }
 }
 ```
 
@@ -1166,14 +1168,14 @@ use std::task::{Context, Poll};
 struct Then<F> { #[pin] fut: F, n: u32 }
 
 impl<F: Future<Output = u32>> Future for Then<F> {
-    type Output = u32;
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<u32> {
-        let this = self.project();
-        match this.fut.poll(cx) {
-            Poll::Ready(v) => Poll::Ready(v + *this.n),
-            Poll::Pending => Poll::Pending,
-        }
-    }
+ type Output = u32;
+ fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<u32> {
+ let this = self.project();
+ match this.fut.poll(cx) {
+ Poll::Ready(v) => Poll::Ready(v + *this.n),
+ Poll::Pending => Poll::Pending,
+ }
+ }
 }
 ```
 
@@ -1193,11 +1195,11 @@ use tokio::task;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
-    let local = task::LocalSet::new();
-    local.run_until(async {
-        let r = Rc::new(1);
-        task::spawn_local(async move { println!("{}", r); }).await.unwrap();
-    }).await;
+ let local = task::LocalSet::new();
+ local.run_until(async {
+ let r = Rc::new(1);
+ task::spawn_local(async move { println!("{}", r); }).await.unwrap();
+ }).await;
 }
 ```
 
@@ -1212,8 +1214,8 @@ use tokio::time::{timeout, sleep, Duration};
 
 #[tokio::main]
 async fn main() {
-    let r = timeout(Duration::from_millis(50), sleep(Duration::from_millis(100))).await;
-    println!("{:?}", r);
+ let r = timeout(Duration::from_millis(50), sleep(Duration::from_millis(100))).await;
+ println!("{:?}", r);
 }
 ```
 
@@ -1227,9 +1229,9 @@ async fn main() {
 use tokio::task::JoinSet;
 
 async fn run() {
-    let mut set = JoinSet::new();
-    for i in 0..4 { set.spawn(async move { println!("{}", i); }); }
-    while set.join_next().await.is_some() {}
+ let mut set = JoinSet::new();
+ for i in 0..4 { set.spawn(async move { println!("{}", i); }); }
+ while set.join_next().await.is_some() {}
 }
 
 #[tokio::main]
@@ -1246,10 +1248,10 @@ Unsafe разрешает пять вещей. Разыменование сыр
 
 ```rust
 fn main() {
-    let mut x = 10;
-    let p = &mut x as *mut i32;
-    unsafe { *p += 1; }
-    println!("{}", x);
+ let mut x = 10;
+ let p = &mut x as *mut i32;
+ unsafe { *p += 1; }
+ println!("{}", x);
 }
 ```
 
@@ -1267,10 +1269,10 @@ UB это поведение, для которого язык не дает н�
 
 ```rust
 fn main() {
-    let mut v = vec![1, 2, 3];
-    let p: *mut i32 = v.as_mut_ptr();
-    unsafe { *p.add(1) = 20; }
-    println!("{:?}", v);
+ let mut v = vec![1, 2, 3];
+ let p: *mut i32 = v.as_mut_ptr();
+ unsafe { *p.add(1) = 20; }
+ println!("{:?}", v);
 }
 ```
 
@@ -1284,11 +1286,11 @@ MaybeUninit<T> это обертка, которая позволяет лега
 use std::mem::MaybeUninit;
 
 fn make_array() -> [u32; 4] {
-    let mut arr: [MaybeUninit<u32>; 4] = unsafe { MaybeUninit::uninit().assume_init() };
-    for (i, slot) in arr.iter_mut().enumerate() {
-        slot.write(i as u32);
-    }
-    unsafe { std::mem::transmute(arr) }
+ let mut arr: [MaybeUninit<u32>; 4] = unsafe { MaybeUninit::uninit().assume_init() };
+ for (i, slot) in arr.iter_mut().enumerate() {
+ slot.write(i as u32);
+ }
+ unsafe { std::mem::transmute(arr) }
 }
 
 fn main() { println!("{:?}", make_array()); }
@@ -1309,7 +1311,7 @@ UnsafeCell это единственный легальный способ по�
 struct Point { x: f64, y: f64 }
 
 extern "C" {
-    fn distance(a: Point, b: Point) -> f64;
+ fn distance(a: Point, b: Point) -> f64;
 }
 ```
 
@@ -1322,7 +1324,7 @@ fn extern "C" задает соглашение вызова C. Без него 
 ```rust
 #[no_mangle]
 pub extern "C" fn add(a: i32, b: i32) -> i32 {
-    std::panic::catch_unwind(|| a + b).unwrap_or(-1)
+ std::panic::catch_unwind(|| a + b).unwrap_or(-1)
 }
 ```
 
@@ -1343,8 +1345,8 @@ struct Wrapped(u32);
 extern "C" { fn takes_u32(x: u32); }
 
 fn main() {
-    let w = Wrapped(7);
-    unsafe { takes_u32(w.0); }
+ let w = Wrapped(7);
+ unsafe { takes_u32(w.0); }
 }
 ```
 
@@ -1376,9 +1378,9 @@ pub extern "C" fn _start() -> ! { loop {} }
 ```rust
 #[cfg(target_arch = "x86_64")]
 fn rdtsc() -> u64 {
-    let lo: u32; let hi: u32;
-    unsafe { core::arch::asm!("rdtsc", out("eax") lo, out("edx") hi); }
-    ((hi as u64) << 32) | lo as u64
+ let lo: u32; let hi: u32;
+ unsafe { core::arch::asm!("rdtsc", out("eax") lo, out("edx") hi); }
+ ((hi as u64) << 32) | lo as u64
 }
 ```
 
@@ -1390,9 +1392,9 @@ fn rdtsc() -> u64 {
 
 ```rust
 fn sum(a: &[f32]) -> f32 {
-    let mut s = 0.0;
-    for &x in a { s += x; }
-    s
+ let mut s = 0.0;
+ for &x in a { s += x; }
+ s
 }
 ```
 
@@ -1429,7 +1431,7 @@ volatile это операции чтения и записи, которые к
 /// # Safety
 /// ptr должен указывать на валидный u8 буфер длиной не меньше len.
 pub unsafe fn read_buf(ptr: *const u8, len: usize) -> Vec<u8> {
-    std::slice::from_raw_parts(ptr, len).to_vec()
+ std::slice::from_raw_parts(ptr, len).to_vec()
 }
 ```
 
@@ -1460,12 +1462,12 @@ pub fn fast_add(a: u32, b: u32) -> u32 { a.wrapping_add(b) }
 
 ```rust
 fn build_lines(out: &mut String, n: u32) {
-    out.clear();
-    out.reserve(n as usize * 4);
-    for i in 0..n {
-        use std::fmt::Write;
-        let _ = write!(out, "{}\n", i);
-    }
+ out.clear();
+ out.reserve(n as usize * 4);
+ for i in 0..n {
+ use std::fmt::Write;
+ let _ = write!(out, "{}\n", i);
+ }
 }
 ```
 
@@ -1477,9 +1479,9 @@ Vec хранит указатель, длину и емкость. При пер
 
 ```rust
 fn main() {
-    let mut v = Vec::with_capacity(1000);
-    for i in 0..1000 { v.push(i); }
-    println!("{} {}", v.len(), v.capacity());
+ let mut v = Vec::with_capacity(1000);
+ for i in 0..1000 { v.push(i); }
+ println!("{} {}", v.len(), v.capacity());
 }
 ```
 
@@ -1491,8 +1493,8 @@ String это владеющий буфер UTF-8. &str это срез вали
 
 ```rust
 fn main() {
-    let s = "привет";
-    println!("{} {}", s.len(), s.chars().count()); // 12 6
+ let s = "привет";
+ println!("{} {}", s.len(), s.chars().count()); // 12 6
 }
 ```
 
@@ -1507,9 +1509,9 @@ use std::collections::HashMap;
 use ahash::RandomState;
 
 fn main() {
-    let mut m: HashMap<u64, u64, RandomState> = HashMap::default();
-    for i in 0..100 { m.insert(i, i * i); }
-    println!("{}", m[&5]);
+ let mut m: HashMap<u64, u64, RandomState> = HashMap::default();
+ for i in 0..100 { m.insert(i, i * i); }
+ println!("{}", m[&5]);
 }
 ```
 
@@ -1521,13 +1523,13 @@ fn main() {
 
 ```rust
 fn parse(b: &[u8]) -> Option<u32> {
-    if b.is_empty() { return None; }
-    let mut acc = 0u32;
-    for &c in b {
-        if !c.is_ascii_digit() { return None; }
-        acc = acc.wrapping_mul(10).wrapping_add((c - b'0') as u32);
-    }
-    Some(acc)
+ if b.is_empty() { return None; }
+ let mut acc = 0u32;
+ for &c in b {
+ if !c.is_ascii_digit() { return None; }
+ acc = acc.wrapping_mul(10).wrapping_add((c - b'0') as u32);
+ }
+ Some(acc)
 }
 ```
 
@@ -1577,7 +1579,7 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 fn sum_to(n: u64) -> u64 { (1..=n).sum() }
 
 fn bench(c: &mut Criterion) {
-    c.bench_function("sum_to_1000", |b| b.iter(|| sum_to(black_box(1000))));
+ c.bench_function("sum_to_1000", |b| b.iter(|| sum_to(black_box(1000))));
 }
 
 criterion_group!(benches, bench);
@@ -1594,16 +1596,16 @@ bench запускается через cargo bench. Результаты сох
 
 ```rust
 macro_rules! hashmap {
-    ($($k:expr => $v:expr),* $(,)?) => {{
-        let mut m = std::collections::HashMap::new();
-        $( m.insert($k, $v); )*
-        m
-    }};
+ ($($k:expr => $v:expr),* $(,)?) => {{
+ let mut m = std::collections::HashMap::new();
+ $( m.insert($k, $v); )*
+ m
+ }};
 }
 
 fn main() {
-    let m = hashmap! { "a" => 1, "b" => 2 };
-    println!("{:?}", m);
+ let m = hashmap! { "a" => 1, "b" => 2 };
+ println!("{:?}", m);
 }
 ```
 
@@ -1615,13 +1617,13 @@ fn main() {
 
 ```rust
 macro_rules! once {
-    () => { let x = 1; let _ = x; };
+ () => { let x = 1; let _ = x; };
 }
 
 fn main() {
-    let x = 10;
-    once!();
-    println!("{}", x); // 10, не перекрыто
+ let x = 10;
+ once!();
+ println!("{}", x); // 10, не перекрыто
 }
 ```
 
@@ -1637,9 +1639,9 @@ fn main() {
 // use quote::quote;
 // #[proc_macro_derive(Hello)]
 // pub fn hello(input: TokenStream) -> TokenStream {
-//     let ast: syn::DeriveInput = syn::parse(input).unwrap();
-//     let name = &ast.ident;
-//     quote! { impl #name { fn hello() { println!("hello from {}", stringify!(#name)); } } }.into()
+// let ast: syn::DeriveInput = syn::parse(input).unwrap();
+// let name = &ast.ident;
+// quote! { impl #name { fn hello() { println!("hello from {}", stringify!(#name)); } } }.into()
 // }
 ```
 
@@ -1652,8 +1654,8 @@ build.rs запускается перед сборкой crate. Использ�
 ```rust
 // build.rs
 fn main() {
-    println!("cargo:rerun-if-changed=schema.proto");
-    println!("cargo:rustc-env=BUILD_VERSION=1.0.0");
+ println!("cargo:rerun-if-changed=schema.proto");
+ println!("cargo:rustc-env=BUILD_VERSION=1.0.0");
 }
 ```
 
@@ -1686,10 +1688,10 @@ impl Socket<Closed> { fn open(self) -> Socket<Open> { Socket { _s: std::marker::
 impl Socket<Open> { fn close(self) -> Socket<Closed> { Socket { _s: std::marker::PhantomData } } }
 
 fn main() {
-    let s = Socket::<Closed> { _s: std::marker::PhantomData };
-    let o = s.open();
-    // o.open(); // ошибка, у Open нет open
-    let _ = o.close();
+ let s = Socket::<Closed> { _s: std::marker::PhantomData };
+ let o = s.open();
+ // o.open(); // ошибка, у Open нет open
+ let _ = o.close();
 }
 ```
 
@@ -1707,16 +1709,16 @@ struct Client { url: String, timeout_ms: u32 }
 struct ClientBuilder { url: Option<String>, timeout_ms: u32 }
 
 impl ClientBuilder {
-    fn new() -> Self { Self { url: None, timeout_ms: 1000 } }
-    fn url(mut self, u: impl Into<String>) -> Self { self.url = Some(u.into()); self }
-    fn timeout_ms(mut self, t: u32) -> Self { self.timeout_ms = t; self }
-    fn build(self) -> Result<Client, &'static str> {
-        Ok(Client { url: self.url.ok_or("url required")?, timeout_ms: self.timeout_ms })
-    }
+ fn new() -> Self { Self { url: None, timeout_ms: 1000 } }
+ fn url(mut self, u: impl Into<String>) -> Self { self.url = Some(u.into()); self }
+ fn timeout_ms(mut self, t: u32) -> Self { self.timeout_ms = t; self }
+ fn build(self) -> Result<Client, &'static str> {
+ Ok(Client { url: self.url.ok_or("url required")?, timeout_ms: self.timeout_ms })
+ }
 }
 
 fn main() {
-    let _c = ClientBuilder::new().url("http://x").timeout_ms(500).build().unwrap();
+ let _c = ClientBuilder::new().url("http://x").timeout_ms(500).build().unwrap();
 }
 ```
 
@@ -1731,14 +1733,14 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 enum StoreError {
-    #[error("io: {0}")]
-    Io(#[from] std::io::Error),
-    #[error("missing key {0}")]
-    Missing(String),
+ #[error("io: {0}")]
+ Io(#[from] std::io::Error),
+ #[error("missing key {0}")]
+ Missing(String),
 }
 
 fn load(path: &str) -> Result<String, StoreError> {
-    Ok(std::fs::read_to_string(path)?)
+ Ok(std::fs::read_to_string(path)?)
 }
 ```
 
@@ -1750,8 +1752,8 @@ fn load(path: &str) -> Result<String, StoreError> {
 
 ```rust
 pub trait KV {
-    fn get(&self, key: &str) -> Option<String>;
-    fn put(&mut self, key: &str, value: &str);
+ fn get(&self, key: &str) -> Option<String>;
+ fn put(&mut self, key: &str, value: &str);
 }
 ```
 
@@ -1795,8 +1797,8 @@ GAT - ассоциированные типы, которые сами пара�
 
 ```rust
 trait LendingIterator {
-    type Item<'a> where Self: 'a;
-    fn next(&mut self) -> Option<Self::Item<'_>>;
+ type Item<'a> where Self: 'a;
+ fn next(&mut self) -> Option<Self::Item<'_>>;
 }
 ```
 
@@ -1812,9 +1814,9 @@ Higher-Ranked Trait Bound - bound вида `for<'a> F: Fn(&'a T) -> &'a U`. Оз
 
 ```rust
 fn apply<F>(f: F) where F: for<'a> Fn(&'a str) -> &'a str {
-    let s = String::from("hi");
-    let r = f(&s);
-    println!("{r}");
+ let s = String::from("hi");
+ let r = f(&s);
+ println!("{r}");
 }
 ```
 
@@ -1836,7 +1838,7 @@ Variance описывает, как лайфтайм или тип-параме�
 
 `PhantomData` контролирует variance структуры. `PhantomData<&'a T>` делает ковариантным по `'a` и `T`. `PhantomData<*mut T>` делает инвариантным. `PhantomData<fn(T)>` - контравариантным по `T`.
 
-Зачем знать. При написании unsafe-обёрток над сырыми указателями вы сами выбираете variance, и неправильный выбор открывает soundness-дыру.
+Почему это важно. При написании unsafe-обёрток над сырыми указателями вы сами выбираете variance, и неправильный выбор открывает soundness-дыру.
 
 #### A4. Лайфтайм subtyping и где это всплывает на практике
 
@@ -1850,13 +1852,13 @@ fn pick<'a, 'b: 'a>(x: &'a str, y: &'b str) -> &'a str { x }
 
 Bound `'b: 'a` нужен, если результат логически смешивает входы. Без него компилятор не позволит вернуть `y`.
 
-Где ещё видно. В трейтах с GAT часто пишут `where Self: 'a`, что эквивалентно «`'a` не дольше `Self`». В асинхронных футурах HRTB и subtyping переплетаются: компилятор подбирает регион так, чтобы все ограничения сходились, и иногда сообщения об ошибках становятся загадочными.
+Ещё встречается: В трейтах с GAT часто пишут `where Self: 'a`, что эквивалентно «`'a` не дольше `Self`». В асинхронных футурах HRTB и subtyping переплетаются: компилятор подбирает регион так, чтобы все ограничения сходились, и иногда сообщения об ошибках становятся загадочными.
 
 #### A5. Variance и soundness pitfall с `*mut T` против `*const T`
 
 Сырой `*mut T` инвариантен по `T`, `*const T` ковариантен. Если вы пишете кастомный smart pointer на `*mut T`, но хотите ковариантности (это семантически безопасно для read-only), нужно либо использовать `NonNull<T>` (ковариантен), либо явно фиксировать variance через `PhantomData`.
 
-Пример проблемы. `struct Erased { ptr: *mut () }` нельзя использовать с trait object-ами через приведение в `*mut dyn Trait` без понимания, что инвариантность по `()` ничего не значит для самого `dyn`. Авторы `Arc` и `Rc` тщательно подбирают `PhantomData` именно для этих причин.
+Где это ломается: `struct Erased { ptr: *mut () }` нельзя использовать с trait object-ами через приведение в `*mut dyn Trait` без понимания, что инвариантность по `()` ничего не значит для самого `dyn`. Авторы `Arc` и `Rc` тщательно подбирают `PhantomData` именно для этих причин.
 
 ### Async, Pin, Unpin
 
@@ -1868,11 +1870,11 @@ Async-функции генерируют такие структуры авто
 
 `Unpin` - auto trait, говорящий «этот тип безопасно перемещать, даже когда он pinned». Большинство пользовательских типов `Unpin`. Стейтмашины `async fn` обычно не `Unpin` (если только не специально), потому что компилятор не доказывает отсутствие self-references.
 
-Pin не магия. На уровне памяти `Pin<&mut T>` - обычная ссылка, контракт держится только на дисциплине: API не выдаёт `&mut T` из `Pin<&mut T>` без `unsafe`, кроме как для `T: Unpin`.
+Внутри Pin никакой магии. На уровне памяти `Pin<&mut T>` - обычная ссылка, контракт держится только на дисциплине: API не выдаёт `&mut T` из `Pin<&mut T>` без `unsafe`, кроме как для `T: Unpin`.
 
 #### A7. Структурный pin projection и pin-project
 
-При наличии `Pin<&mut Outer>` хочется получить `Pin<&mut Inner>` для конкретного поля. Это можно сделать только если автор `Outer` принял на себя обязательство: либо все pinned-проекции остаются pinned, либо ни одна. Безопасный код этого не сделает.
+Есть `Pin<&mut Outer>`, хочется получить `Pin<&mut Inner>` для конкретного поля. Это можно сделать только если автор `Outer` принял на себя обязательство: либо все pinned-проекции остаются pinned, либо ни одна. Безопасный код этого не сделает.
 
 Крейт `pin-project` (и `pin-project-lite`) генерирует корректный код проекций. Помечаете поле `#[pin]` - оно проектируется как `Pin<&mut Field>`. Без `#[pin]` - как обычный `&mut Field`. Дроп через `PinnedDrop` обрабатывается отдельно.
 
@@ -1902,7 +1904,7 @@ Send/Sync. Если хоть одно поле future не `Send`, future не `
 
 ```rust
 trait Storage {
-    async fn put(&self, k: String, v: Vec<u8>) -> Result<(), Error>;
+ async fn put(&self, k: String, v: Vec<u8>) -> Result<(), Error>;
 }
 ```
 
@@ -1916,7 +1918,7 @@ Send-bound. Если `dyn Storage` нужен в Send-контексте, ест
 
 Stacked Borrows - формальная модель алиасинга в Rust, описывающая, какие комбинации ссылок и сырых указателей не вызывают UB. Miri (интерпретатор MIR) проверяет код по этой модели и ловит ошибки, которые компилятор пропустит.
 
-Грубо. Каждой ссылке присваивается «тег». Все ссылки на один объект образуют стек тегов. Создание новой ссылки кладёт тег на верх стека. Использование старой ссылки требует, чтобы её тег был ещё в стеке; если поверх него легла `&mut`, старый тег «выкинут», и использование - UB.
+Каждой ссылке присваивается «тег». Все ссылки на один объект образуют стек тегов. Создание новой ссылки кладёт тег на верх стека. Использование старой ссылки требует, чтобы её тег был ещё в стеке; если поверх него легла `&mut`, старый тег «выкинут», и использование - UB.
 
 Tree Borrows - новая модель, более либеральная: вместо стека дерево. Принимает паттерны, которые Stacked Borrows отвергает (например, two-phase borrows в некоторых сценариях), сохраняя ключевые гарантии.
 
@@ -1934,13 +1936,13 @@ Atomic operations задают ordering для модели памяти C++20 (
 
 `SeqCst` - дополнительно гарантирует единый глобальный порядок всех SeqCst-операций. Самый дорогой по производительности, но даёт интуитивную модель «как будто всё последовательно».
 
-Подводный камень. `Relaxed` декремент strong count в `Arc` корректен только потому, что финальный декремент использует `Acquire`. Это тонкий паттерн, бездумное копирование в свои структуры даст data race.
+Грабли: `Relaxed` декремент strong count в `Arc` корректен только потому, что финальный декремент использует `Acquire`. Это тонкий паттерн, бездумное копирование в свои структуры даст data race.
 
 #### A13. Loom: как искать гонки в lock-free коде
 
 `loom` - библиотека для model checking конкурентного кода. Запускает ваш тест миллион раз, перебирая все возможные перестановки атомиков и блокировок по разрешённым моделью памяти. Если есть хотя бы один interleaving, дающий некорректный результат, loom его найдёт.
 
-Использование. Помечаете тесты `#[cfg(loom)]`, заменяете `std::sync::Mutex` на `loom::sync::Mutex`, `std::sync::atomic::AtomicUsize` на `loom::sync::atomic::AtomicUsize`. Запускаете `RUSTFLAGS="--cfg loom" cargo test`.
+Как пользоваться. Помечаете тесты `#[cfg(loom)]`, заменяете `std::sync::Mutex` на `loom::sync::Mutex`, `std::sync::atomic::AtomicUsize` на `loom::sync::atomic::AtomicUsize`. Запускаете `RUSTFLAGS="--cfg loom" cargo test`.
 
 Ограничения. Loom медленный (поэтому тесты должны быть маленькие, типично 2-3 потока). Не обнаруживает багов, требующих специфичной аппаратной модели (ARM/POWER weak memory) - проверяется только модель C++20. Не подменяет Miri: loom про конкурентность, Miri про aliasing UB.
 
@@ -1962,8 +1964,8 @@ Niche - значение, которое тип не может принимат
 use std::alloc::{GlobalAlloc, Layout};
 struct MyAlloc;
 unsafe impl GlobalAlloc for MyAlloc {
-    unsafe fn alloc(&self, l: Layout) -> *mut u8 { /* */ unimplemented!() }
-    unsafe fn dealloc(&self, p: *mut u8, l: Layout) { /* */ }
+ unsafe fn alloc(&self, l: Layout) -> *mut u8 { /* */ unimplemented!() }
+ unsafe fn dealloc(&self, p: *mut u8, l: Layout) { /* */ }
 }
 
 #[global_allocator]
@@ -1972,7 +1974,7 @@ static A: MyAlloc = MyAlloc;
 
 Аллокатор-на-тип (только для одной коллекции) делается через `Allocator` trait и `Box::new_in`, `Vec::new_in`. Стабильно: `Allocator` ещё nightly, на стабильном пользуются крейтами вроде `allocator-api2`.
 
-Где это нужно. Real-time системы (без вызова `mmap` на горячем пути). Подсчёт аллокаций для трекинга в тестах. Arena-аллокаторы для парсеров, где всё умирает разом. jemalloc/mimalloc как замена системного для лучшей производительности в многопоточных сервисах.
+Где это нужно: real-time системы (без вызова `mmap` на горячем пути). Подсчёт аллокаций для трекинга в тестах. Arena-аллокаторы для парсеров, где всё умирает разом. jemalloc/mimalloc как замена системного для лучшей производительности в многопоточных сервисах.
 
 ### Soundness и API design
 
@@ -1980,12 +1982,12 @@ static A: MyAlloc = MyAlloc;
 
 Dropck - подсистема borrow checker, проверяющая, что в момент дропа значения все ссылки, которые оно содержит, ещё валидны. Это важно для типов с кастомным `Drop`, который потенциально читает свои поля.
 
-Пример проблемы.
+Где это ломается:
 
 ```rust
 struct Holder<'a, T: 'a> { item: &'a T }
 impl<'a, T> Drop for Holder<'a, T> {
-    fn drop(&mut self) { /* возможно читает item */ }
+ fn drop(&mut self) { /* возможно читает item */ }
 }
 ```
 
@@ -2019,11 +2021,11 @@ struct Request<S> { url: String, _s: std::marker::PhantomData<S> }
 struct Draft; struct Sent;
 
 impl Request<Draft> {
-    fn new(url: String) -> Self { Self { url, _s: std::marker::PhantomData } }
-    fn send(self) -> Request<Sent> { Request { url: self.url, _s: std::marker::PhantomData } }
+ fn new(url: String) -> Self { Self { url, _s: std::marker::PhantomData } }
+ fn send(self) -> Request<Sent> { Request { url: self.url, _s: std::marker::PhantomData } }
 }
 impl Request<Sent> {
-    fn response(&self) -> String { String::from("ok") }
+ fn response(&self) -> String { String::from("ok") }
 }
 ```
 
@@ -2043,7 +2045,7 @@ impl Request<Sent> {
 
 Auto-вывод `Send`/`Sync` опирается на состав полей. Если у вашего типа есть поле, формально снимающее `Send` (например, `*mut T`), но логически тип всё равно безопасен, можно написать `unsafe impl Send for MyType {}`. Слово unsafe здесь означает: вы обязуетесь поддерживать инварианты, которые компилятор больше не проверяет.
 
-Что нужно доказать.
+Что обязан гарантировать автор unsafe impl.
 
 Для `Send`: значение можно «переместить» из одного потока в другой без UB. Если внутри сырой указатель на heap-данные, эти данные не должны иметь thread-local references; деструктор должен корректно работать в произвольном потоке.
 
@@ -2066,7 +2068,6 @@ Consumer симметрично: читает свой `head` (Relaxed), чит�
 Подводные камни. False sharing: `head` и `tail` должны быть на разных кеш-линиях, иначе CPU постоянно инвалидирует кеш противоположного потока. `#[repr(align(64))]` или `crossbeam_utils::CachePadded` решают.
 
 ABA проблема в SPSC отсутствует (только один producer и один consumer), но появляется в MPMC, и там нужны теги версии или hazard pointers.
-
 
 ## Сколько времени занимает подготовка
 
