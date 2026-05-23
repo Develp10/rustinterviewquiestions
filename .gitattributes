@@ -1,0 +1,6 @@
+# Treat Python files as non-detectable so Rust shows up in Languages
+*.py linguist-detectable=false
+*.py linguist-vendored
+
+# Make sure Rust is detected
+*.rs linguist-detectable=true
