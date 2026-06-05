@@ -1,0 +1,8 @@
+[package]
+name = "ownership-move"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[dev-dependencies]
