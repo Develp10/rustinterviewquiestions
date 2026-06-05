@@ -1,0 +1,21 @@
+# Workspace для практических задач (tasks/).
+# Запуск всех тестов:        cargo test --workspace
+# Тесты одной задачи:        cargo test -p ownership-move
+# Clippy:                    cargo clippy --workspace -- -D warnings
+# Форматирование:            cargo fmt --check
+# Miri (для unsafe-задач):   cargo +nightly miri test -p lock-free-stack
+
+[workspace]
+resolver = "2"
+members = [
+    "tasks/01-ownership-move",
+    "tasks/02-lock-free-stack",
+    "tasks/03-async-cancellation",
+]
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
